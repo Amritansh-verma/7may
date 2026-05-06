@@ -1,194 +1,355 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amritansh & Garvita</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Garvita | 4 Years of Magic 🌌</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Quicksand:wght@300;400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #05050a;
+            --gold: #d4af37;
+            --accent: #ff4d4d;
+            --glass: rgba(255, 255, 255, 0.05);
+            --gold-glow: rgba(212, 175, 55, 0.3);
+        }
 
-<!-- FONTS -->
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Caveat&family=Outfit&display=swap" rel="stylesheet">
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
 
-<style>
-body{
-  margin:0;
-  background:#02030a;
-  color:white;
-  font-family:'Outfit',sans-serif;
-  overflow:hidden;
-}
+        body {
+            background-color: var(--bg);
+            color: #ffffff;
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-/* ENTRY */
-#entryScreen{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  background:#02030a;z-index:9999;
-}
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-#enterBtn{
-  padding:14px 32px;
-  border-radius:40px;
-  border:1px solid #a78bfa;
-  background:transparent;
-  color:#c8a8ff;
-  font-size:16px;
-  cursor:pointer;
-  animation:pulse 2s infinite;
-}
+        /* --- Background Canvas --- */
+        #starfield {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+        }
 
-@keyframes pulse{
-  0%{box-shadow:0 0 10px #a78bfa;}
-  50%{box-shadow:0 0 30px #a78bfa;}
-  100%{box-shadow:0 0 10px #a78bfa;}
-}
+        /* --- Entry Experience --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease-in-out;
+        }
 
-/* VIDEO */
-#introVideo{
-  position:fixed;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  display:none;
-  z-index:9998;
-}
+        .enter-btn {
+            padding: 18px 50px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            letter-spacing: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: 0.5s;
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
 
-/* TYPING */
-#typingScreen{
-  position:fixed;inset:0;
-  display:none;
-  align-items:center;justify-content:center;
-  background:#02030a;
-  z-index:9997;
-  font-size:1.6rem;
-  color:#ffb3d1;
-  font-family:'Caveat',cursive;
-}
+        .enter-btn:hover {
+            background: var(--gold);
+            color: #000;
+            box-shadow: 0 0 40px var(--gold);
+        }
 
-/* MAIN SITE */
-#mainContent{
-  display:none;
-}
+        /* --- Video Overlay --- */
+        #video-stage {
+            position: fixed;
+            inset: 0;
+            z-index: 9000;
+            display: none;
+            background: #000;
+        }
 
-/* HERO (tumhara style simplified same feel) */
-.hero{
-  min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;text-align:center;
-}
+        video { width: 100%; height: 100%; object-fit: cover; }
 
-.hero h1{
-  font-family:'Cormorant Garamond',serif;
-  font-size:60px;
-  background:linear-gradient(135deg,#f5d76e,#ff7eb3,#c8a8ff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+        /* --- Main Layout --- */
+        .content-wrapper { display: none; opacity: 0; transition: 2s opacity ease; }
 
-.hero p{
-  opacity:0.6;
-  margin-top:10px;
-}
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 20px;
+            position: relative;
+        }
 
-/* TIMER */
-.timer{
-  text-align:center;
-  margin-top:50px;
-  font-size:30px;
-}
-</style>
+        .reveal { opacity: 0; transform: translateY(60px); transition: 1.5s all ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- Typography --- */
+        .title-main {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            background: linear-gradient(to bottom, #fff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 10px 30px var(--gold-glow);
+        }
+
+        .date-badge {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 40px;
+        }
+
+        /* --- Photo Frames & Cards --- */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            margin: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .image-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 50px;
+        }
+
+        .frame {
+            height: 400px;
+            background: #111;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--gold-glow);
+            position: relative;
+            transition: 0.5s;
+        }
+
+        .frame img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(30%); transition: 0.8s; }
+        .frame:hover img { filter: grayscale(0%); transform: scale(1.1); }
+        .frame::after {
+            content: 'Memory';
+            position: absolute;
+            bottom: 15px; left: 15px;
+            font-family: 'Cinzel';
+            font-size: 0.8rem;
+            color: var(--gold);
+        }
+
+        /* --- Sorry Section --- */
+        .sorry-box {
+            border-left: 4px solid var(--accent);
+            padding-left: 25px;
+            text-align: left;
+        }
+
+        .sorry-box h2 { color: var(--accent); font-family: 'Cinzel'; margin-bottom: 15px; }
+
+        /* --- Animated Heart --- */
+        .chocolate-heart {
+            width: 150px;
+            height: 150px;
+            fill: #5D3A1A; /* Chocolate Dark */
+            filter: drop-shadow(0 0 20px #D2691E);
+            animation: pulse 1.5s infinite ease-in-out;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.15) rotate(5deg); }
+        }
+
+        /* --- Footer --- */
+        footer { padding: 50px; text-align: center; opacity: 0.5; font-size: 0.9rem; }
+
+    </style>
 </head>
-
 <body>
 
-<!-- ENTRY -->
-<div id="entryScreen">
-  <button id="enterBtn">Walk with me… ✨</button>
-</div>
+    <canvas id="starfield"></canvas>
+    
+    <audio id="main-audio" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
 
-<!-- VIDEO -->
-<video id="introVideo">
-  <source src="your-video.mp4" type="video/mp4">
-</video>
+    <div id="loader">
+        <button class="enter-btn" onclick="igniteJourney()">Walk with me… 🌌</button>
+        <p style="margin-top: 30px; opacity: 0.4; letter-spacing: 2px;">(Volume Up Recommended)</p>
+    </div>
 
-<!-- MUSIC -->
-<audio id="bgMusic" loop>
-  <source src="your-music.mp3" type="audio/mp3">
-</audio>
+    <div id="video-stage">
+        <video id="cinematic-video">
+            <source src="intro.mp4" type="video/mp4">
+        </video>
+    </div>
 
-<!-- TYPING -->
-<div id="typingScreen">
-  <span id="typingText"></span>
-</div>
+    <div class="content-wrapper" id="main-content">
+        
+        <section class="reveal">
+            <h1 class="title-main">Garvita</h1>
+            <p class="date-badge">Since 7 May 2022</p>
+            <div class="frame" style="width: 320px; height: 320px; border-radius: 50%;">
+                <img src="photo.jpeg" alt="You">
+            </div>
+            <p style="margin-top: 30px; max-width: 500px; text-align: center; font-weight: 300; letter-spacing: 1px;">
+                In the vast expansion of the universe, my favorite destination will be always you.
+                <br><br>
+                ((Kash tum chand aur ham sitare hote ek duje ko sbse pyaare hote,log hame aasman me dundhte pr hamari nazdikiyo ka raz sirf ham jante !!!))
+            </p>
+        </section>
 
-<!-- ================== ORIGINAL WEBSITE ================== -->
-<div id="mainContent">
+        <section>
+            <h2 style="font-family: 'Cinzel'; color: var(--gold); margin-bottom: 40px;" class="reveal">Our Constellations</h2>
+            <div class="image-container reveal">
+                <div class="frame"><img src="photo1.jpeg" alt="Memory 2"></div>
+                <div class="frame"><img src="photo2.jpeg" alt="Memory 3"></div>
+                <div class="frame"><img src="photo3.jpeg" alt="Memory 4"></div>
+            </div>
+        </section>
 
-  <section class="hero">
-    <h1>Amritansh <br> ❤️ <br> Garvita</h1>
-    <p>Written in the stars… felt in every moment ✨</p>
-  </section>
+        <section class="reveal">
+            <div class="glass-card">
+                <p style="margin-bottom: 20px; font-size: 1.2rem;">Garvita,</p>
+                <p>
+                    Ye 4 saal mere liye sirf ek waqt nahi, ek puri zindagi hain. Hum log saath mein hasna, rona aur grow karna sikhe. Aaj <b>7 May 2026</b> ko jab peeche mudkar dekhte h, toh har frame mein sirf tum dikhti ho.
+                </p>
+                <br>
+                <p>
+                    Tum meri wo anchor ho jo hame har toofan mein sambhalti hai. I promise to keep exploring the stars with you, forever.
+                  <br><br>  Aaj bhi chotku tumhari smile aur tedhe medhe daant dono yaad aate h aur tumhara hame pyaar se gussa me aankhe badi krke dekhna bhut si memories h jaan
+                </p>
+            </div>
+        </section>
 
-  <div class="timer">
-    <div id="time"></div>
-  </div>
+        <section class="reveal">
+            <div class="glass-card sorry-box">
+                <h2>I am Sorry...</h2>
+                <p>
+                  Ham jaanta h ki pichle kuch mahine mushkil rahe hain. Meri baaton se aur harkaton se tumhe dukh pahuncha, aur uske liye ham dil se maafi maangte h. Plz ab sb wapas normal krte h na ek chance toh de kr dekho plz 
+                </p>
+                <br>
+                <p style="font-weight: 600; color: var(--gold);">Tumhari narazgi meri duniya ko andhera kar di hai. Maaf kar do na?</p>
+            </div>
+            <div class="frame" style="width: 250px; height: 300px; margin-top: 40px;">
+                <img src="photo5.jpeg" alt="Favorite Memory">
+                
+            </div>
+        </section>
 
-</div>
+        <section class="reveal">
+            <svg class="chocolate-heart" viewBox="0 0 32 32">
+                <path d="M16 28.5L14.1 26.7C7.3 20.6 2.8 16.5 2.8 11.5 2.8 7.4 6 4.2 10.1 4.2c2.3 0 4.5 1.1 5.9 2.8 1.4-1.7 3.6-2.8 5.9-2.8 4.1 0 7.3 3.2 7.3 7.3 0 5-4.5 9.1-11.3 15.2L16 28.5z"/>
+            </svg>
+            <h1 style="font-family: 'Dancing Script'; font-size: 3.5rem; color: #fff;">I Love You Forever My Rasmalaiya </h1>
+            <p style="letter-spacing: 8px; margin-top: 15px; opacity: 0.7; color: var(--gold);">Happy Anniversary Once Again</p>
+        </section>
 
-<script>
-const btn = document.getElementById("enterBtn");
-const video = document.getElementById("introVideo");
-const music = document.getElementById("bgMusic");
-const entry = document.getElementById("entryScreen");
-const typing = document.getElementById("typingScreen");
-const main = document.getElementById("mainContent");
+        <footer>
+            <p>ham yaha tumhe jabardasti hamse pyaar kro kehne nhi aaye h ham sirf iss liye aaye h kyu ki h ki ham tumse sache dil se pyaar krteh  meri jaan tumhare na rehne ke itne time baad tk tumse pyaar kr rhe h aur krte rhege aage bhi jb tk zinda h .</p>
+        </footer>
+    </div>
 
-btn.onclick = () => {
-  entry.style.display="none";
-  video.style.display="block";
-  video.play();
+    <script>
+        // 1. STARFIELD LOGIC
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        const count = 200;
 
-  music.volume=0;
-  music.play();
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 1.5,
+                    d: Math.random() * count,
+                    s: Math.random() * 0.05
+                });
+            }
+        }
 
-  let v=0;
-  let fade=setInterval(()=>{
-    if(v<0.3){
-      v+=0.02;
-      music.volume=v;
-    } else clearInterval(fade);
-  },200);
-};
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fill();
+                s.y -= s.s * 5;
+                if (s.y < 0) s.y = canvas.height;
+            });
+            requestAnimationFrame(drawStars);
+        }
 
-video.onended = () => {
-  video.style.display="none";
-  typing.style.display="flex";
+        window.addEventListener('resize', initStars);
+        initStars();
+        drawStars();
 
-  let text="Garvita… ek baar bas sun lo…";
-  let i=0;
+        // 2. FLOW CONTROL
+        function igniteJourney() {
+            const music = document.getElementById('main-audio');
+            const video = document.getElementById('cinematic-video');
+            const stage = document.getElementById('video-stage');
 
-  function type(){
-    if(i<text.length){
-      document.getElementById("typingText").innerHTML+=text[i];
-      i++;
-      setTimeout(type,70);
-    } else {
-      setTimeout(()=>{
-        typing.style.display="none";
-        main.style.display="block";
-        document.body.style.overflow="auto";
-      },1500);
-    }
-  }
-  type();
-};
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                stage.style.display = 'block';
+                video.play();
+                music.play();
 
-// TIMER
-const start = new Date("May 7, 2021").getTime();
-setInterval(()=>{
-  const now = new Date().getTime();
-  const diff = now - start;
-  const d = Math.floor(diff/(1000*60*60*24));
-  document.getElementById("time").innerText = d + " days together ❤️";
-},1000);
-</script>
+                video.onended = () => {
+                    stage.style.opacity = '0';
+                    setTimeout(() => {
+                        stage.style.display = 'none';
+                        const main = document.getElementById('main-content');
+                        main.style.display = 'block';
+                        setTimeout(() => main.style.opacity = '1', 100);
+                        initScrollReveal();
+                    }, 1000);
+                };
+            }, 1000);
+        }
 
+        // 3. SCROLL REVEAL LOGIC
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+    </script>
 </body>
 </html>
